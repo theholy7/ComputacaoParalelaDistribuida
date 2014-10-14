@@ -12,9 +12,12 @@ Course:
 
 **************************************************************************/
 
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 
+/* input validation: verify if only 2 parameters are used */
 int input_validation (int arg_count, char *arg_vector[]){
 
   if(arg_count != 2) {
@@ -25,10 +28,32 @@ int input_validation (int arg_count, char *arg_vector[]){
   return 1;
 }
 
+
+
 /* main: process parameters */
 int main(int argc, char *argv[]) {
+  
+  FILE *fp;
+  int errnum;
 
   input_validation(argc, argv);
+
+  /* Program start: read file from argv */
+  fp = fopen (argv[1], "r");
+
+  /* Validate if file exists*/
+  if (fp == NULL){
+
+    /* If not: print error */
+    errnum = errno;
+    fprintf(stderr, "Error opening file: %s\n", strerror( errnum ));
+   }
+
+   else{
+    /* Read important values from file - 2 ints - 2 strings */
+
+    fclose (fp);
+   }
 
   return 0;
 }
