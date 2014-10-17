@@ -29,7 +29,6 @@ int input_validation (int arg_count, char *arg_vector[]){
 }
 
 
-
 /* main: process parameters */
 int main(int argc, char *argv[]) {
   
@@ -55,35 +54,13 @@ int main(int argc, char *argv[]) {
    else{
     /* Read important values from file - 2 ints - 2 strings */
     fscanf(fp, "%d %d\n", &size_of_vector[0], &size_of_vector[1]);
-    printf("%d %d\n", size_of_vector[0], size_of_vector[1]);
-
-    /* Start arrays to store sequences */
     
+    /* Start arrays to store sequences */
     char *seq_1 = (char *) malloc ((size_of_vector[0]+1) * sizeof(char));
-    int i = 0;
-    char c;
-    do{
-      c = getc(fp);
-      seq_1[i] = c;
-      i++;
-
-    } while(c != '\n');
-
-    for(i = 0; i < size_of_vector[0]+1; i++)
-      printf("%c", seq_1[i]);
-
     char *seq_2 = (char *) malloc ((size_of_vector[1]+1) * sizeof(char));
-    i=0;
-    do{
-      c = getc(fp);
-      seq_2[i] = c;
-      i++;
-
-    } while(c != '\n');
-
-    for(i = 0; i < size_of_vector[1]+1; i++)
-      printf("%c", seq_2[i]);
-
+    
+    /* Read arrays */
+    fscanf(fp, "%s\n%s", seq_1, seq_2);
 
     fclose (fp);
    }
