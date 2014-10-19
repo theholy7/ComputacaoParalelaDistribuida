@@ -34,7 +34,13 @@ int main(int argc, char *argv[]) {
   
   FILE *fp;
   int errnum;
-
+  
+  int size_of_vector[3];
+  
+  /* Start arrays to store sequences */
+  char *seq_1 = (char *) malloc ((size_of_vector[0]+1) * sizeof(char));
+  char *seq_2 = (char *) malloc ((size_of_vector[1]+1) * sizeof(char));
+  
   input_validation(argc, argv);
 
   /* Program start: read file from argv */
@@ -49,23 +55,34 @@ int main(int argc, char *argv[]) {
    }
 
    else{
-    int size_of_vector[3];
     /* Read important values from file - 2 ints - 2 strings */
     fscanf(fp, "%d %d\n", &size_of_vector[0], &size_of_vector[1]);
     
-    /* Start arrays to store sequences */
-    char *seq_1 = (char *) malloc ((size_of_vector[0]+1) * sizeof(char));
-    char *seq_2 = (char *) malloc ((size_of_vector[1]+1) * sizeof(char));
+    
     
     /* Read arrays */
-    fscanf(fp, "%s\n%s", seq_1, seq_2);
-
+    fscanf(fp,"%s\n%s", seq_1, seq_2);
+    
     fclose (fp);
    }
-
-   for(int i = 0; i <= size_of_vector[0]; i++){
-    for(int j = 0; j <= size_of_vector[1]; j++){
-      
+   
+  int i, j;
+  int *Matrix = (int *) malloc( (size_of_vector[0]+1)*sizeof(int));
+  
+  for(i = 0; i <= size_of_vector[0]; i++){
+    
+  int *Matrix[i] = (int *) malloc( (size_of_vector[1]+1)*sizeof(int));
+    
+    for(j = 0; j <= size_of_vector[1]; j++){
+      if(i==0||j==0){ 
+        Matrix[i][j]=0;
+        }
+      else if(seq_1[i+1]==seq_2[j+1]){
+        Matrix[i][j]=Matrix[i-1][j-1]+1;
+        }
+      else{
+        Matrix[i][j]=max(Matrix[i-1][j],Matrix[i][j-1]);
+        }
     }
    }
 
