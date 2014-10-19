@@ -10,12 +10,17 @@ STUDENTS:
 Course:
         Computação Paralela e Distribuida - 2014 @ IST
 
+Compile with:
+        
+        gcc -lm -o lcs-serial lcs-serial.c
+
 **************************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <math.h>
 
 /* input validation: verify if only 2 parameters are used */
 int input_validation (int arg_count, char *arg_vector[]){
@@ -67,11 +72,11 @@ int main(int argc, char *argv[]) {
    }
    
   int i, j;
-  int *Matrix = (int *) malloc( (size_of_vector[0]+1)*sizeof(int));
+  int **Matrix = (int **) malloc( (size_of_vector[0]+1)*sizeof(int));
   
   for(i = 0; i <= size_of_vector[0]; i++){
     
-  int *Matrix[i] = (int *) malloc( (size_of_vector[1]+1)*sizeof(int));
+    Matrix[i] = (int *) malloc( (size_of_vector[1]+1)*sizeof(int));
     
     for(j = 0; j <= size_of_vector[1]; j++){
       if(i==0||j==0){ 
@@ -81,7 +86,7 @@ int main(int argc, char *argv[]) {
         Matrix[i][j]=Matrix[i-1][j-1]+1;
         }
       else{
-        Matrix[i][j]=max(Matrix[i-1][j],Matrix[i][j-1]);
+        Matrix[i][j]= fmax(Matrix[i-1][j],Matrix[i][j-1]);
         }
     }
    }
