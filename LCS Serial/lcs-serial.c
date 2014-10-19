@@ -35,9 +35,6 @@ int main(int argc, char *argv[]) {
   FILE *fp;
   int errnum;
 
-  int size_of_vector[3];
-
-
   input_validation(argc, argv);
 
   /* Program start: read file from argv */
@@ -52,6 +49,7 @@ int main(int argc, char *argv[]) {
    }
 
    else{
+    int size_of_vector[3];
     /* Read important values from file - 2 ints - 2 strings */
     fscanf(fp, "%d %d\n", &size_of_vector[0], &size_of_vector[1]);
     
@@ -63,6 +61,12 @@ int main(int argc, char *argv[]) {
     fscanf(fp, "%s\n%s", seq_1, seq_2);
 
     fclose (fp);
+   }
+
+   for(int i = 0; i <= size_of_vector[0]; i++){
+    for(int j = 0; j <= size_of_vector[1]; j++){
+      
+    }
    }
 
   return 0;
