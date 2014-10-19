@@ -33,6 +33,17 @@ int input_validation (int arg_count, char *arg_vector[]){
   return 1;
 }
 
+/* Slowdown function, used to make our code easier to time*/
+short cost(int x){
+  int i, n_iter = 20;
+  double dcost = 0;
+  
+  for(i = 0; i < n_iter; i++)
+    dcost += pow(sin((double) x),2) + pow(cos((double) x),2);
+  return (short) (dcost / n_iter + 0.1);
+}
+
+
 
 /* main: process parameters */
 int main(int argc, char *argv[]) {
@@ -83,7 +94,7 @@ int main(int argc, char *argv[]) {
         Matrix[i][j]=0;
         }
       else if(seq_1[i+1]==seq_2[j+1]){
-        Matrix[i][j]=Matrix[i-1][j-1]+1;
+        Matrix[i][j]=Matrix[i-1][j-1]+cost(i);
         }
       else{
         Matrix[i][j]= fmax(Matrix[i-1][j],Matrix[i][j-1]);
