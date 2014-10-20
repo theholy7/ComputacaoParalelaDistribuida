@@ -49,9 +49,9 @@ short cost(int x){
 int main(int argc, char *argv[]) {
   
   FILE *fp;
-  int errnum;
+  unsigned short int errnum;
   
-  int size_of_vector[3];
+  unsigned short int size_of_vector[3];
   char *seq_1, *seq_2;
   
   input_validation(argc, argv);
@@ -85,20 +85,20 @@ int main(int argc, char *argv[]) {
   //~ printf("%s\n",seq_1);
   //~ printf("%s\n",seq_2);
   
-  int i=0, j=0;
-  int** Matrix = (int **) malloc( (size_of_vector[0]+1)*sizeof(int));
+  unsigned short int i=0, j=0;
+  unsigned short int** Matrix = (unsigned short int **) malloc( (size_of_vector[0]+1)*sizeof(unsigned short int));
   
   /* Loop to populate the matrix and give us the longest common subsequence size */
   for(i = 0; i < (size_of_vector[0]+1); i++){
     
-    Matrix[i] = (int *) malloc( (size_of_vector[1]+1)*sizeof(int));
+    Matrix[i] = (unsigned short int *) malloc( (size_of_vector[1]+1)*sizeof(unsigned short int));
     
     for(j = 0; j < (size_of_vector[1]+1); j++){
       if(i==0||j==0){ 
         Matrix[i][j]=0;
         }
       else if(seq_1[i-1]==seq_2[j-1]){
-        Matrix[i][j]=Matrix[i-1][j-1]+cost(i);
+        Matrix[i][j]=Matrix[i-1][j-1]+1;
         }
       else{
         Matrix[i][j]= fmax(Matrix[i-1][j],Matrix[i][j-1]);
@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
   
   i=size_of_vector[0]+1;
   j=size_of_vector[1]+1;
-  int CurrentNumber=Matrix[i-1][j-1];
+  unsigned short int CurrentNumber=Matrix[i-1][j-1];
   
   while( i>0 && j>0 ){
     if(seq_1[i-1]==seq_2[j-1]){
