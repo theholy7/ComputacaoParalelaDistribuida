@@ -73,8 +73,8 @@ int main(int argc, char *argv[]) {
     
     
     /* Start arrays to store sequences */
-    seq_1 = (char *) malloc ((size_of_vector[0]+1) * sizeof(char));
-    seq_2 = (char *) malloc ((size_of_vector[1]+1) * sizeof(char));
+    seq_1 = (char *) malloc ((size_of_vector[0]) * sizeof(char));
+    seq_2 = (char *) malloc ((size_of_vector[1]) * sizeof(char));
     
     /* Read arrays */
     fscanf(fp,"%s\n%s", seq_1, seq_2);
@@ -82,21 +82,22 @@ int main(int argc, char *argv[]) {
     fclose (fp);
   }
   
+  //~ printf("%s\n",seq_1);
+  //~ printf("%s\n",seq_2);
   
-   
   int i=0, j=0;
   int** Matrix = (int **) malloc( (size_of_vector[0]+1)*sizeof(int));
   
   /* Loop to populate the matrix and give us the longest common subsequence size */
-  for(i = 0; i < size_of_vector[0]; i++){
+  for(i = 0; i < (size_of_vector[0]+1); i++){
     
     Matrix[i] = (int *) malloc( (size_of_vector[1]+1)*sizeof(int));
     
-    for(j = 0; j < size_of_vector[1]; j++){
+    for(j = 0; j < (size_of_vector[1]+1); j++){
       if(i==0||j==0){ 
         Matrix[i][j]=0;
         }
-      else if(seq_1[i+1]==seq_2[j+1]){
+      else if(seq_1[i-1]==seq_2[j-1]){
         Matrix[i][j]=Matrix[i-1][j-1]+cost(i);
         }
       else{
@@ -106,27 +107,26 @@ int main(int argc, char *argv[]) {
   }
   
   /* Debugging code, use to print out full matrix. Comment when not using */
-  //~ for( i=0; i<size_of_vector[0]; i++){
+  //~ for( i=0; i<size_of_vector[0]+1; i++){
     //~ printf("\n");
-    //~ for( j=0; j<size_of_vector[1]; j++){
+    //~ for( j=0; j<size_of_vector[1]+1; j++){
     //~ printf("%4d ",Matrix[i][j]);
     //~ }
   //~ }
   
-  printf("%d\n",Matrix[size_of_vector[0]-1][size_of_vector[1]-1]+1);
+  printf("%d\n",Matrix[size_of_vector[0]][size_of_vector[1]]);
   
   /* Loop to discover the longest common subsequence */
   
-  char *LongestSubsequence = (char *) malloc( ((Matrix[size_of_vector[0]-1][size_of_vector[1]-1])+1)*sizeof(char));
+  char *LongestSubsequence = (char *) malloc( ((Matrix[size_of_vector[0]][size_of_vector[1]]))*sizeof(char));
   
-  i=size_of_vector[0];
-  j=size_of_vector[1];
-  int CurrentNumber=Matrix[size_of_vector[0]-1][size_of_vector[1]-1];
+  i=size_of_vector[0]+1;
+  j=size_of_vector[1]+1;
+  int CurrentNumber=Matrix[i-1][j-1];
   
-  while( i>=0 && j>=0 ){
-    if(seq_1[i]==seq_2[j]){
-      LongestSubsequence[CurrentNumber]=seq_1[i];
-      printf("%c\n",seq_1[i]);
+  while( i>0 && j>0 ){
+    if(seq_1[i-1]==seq_2[j-1]){
+      LongestSubsequence[CurrentNumber]=seq_1[i-1];
       i--;
       j--;
       CurrentNumber--;
@@ -137,15 +137,9 @@ int main(int argc, char *argv[]) {
     else{
       j--;
     }
-        
   }
     
-  //~ printf("\nLongest Subsequence = ");
-  for(i=0;i<Matrix[size_of_vector[0]-1][size_of_vector[1]-1];i++){
-  printf("%c",LongestSubsequence[i]);
-  }
-  //~ printf("%s\n",LongestSubsequence);
-  printf("\n\n");
+  printf("%s\n",LongestSubsequence);
 
   return 0;
 }
