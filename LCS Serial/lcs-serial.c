@@ -106,14 +106,14 @@ int main(int argc, char *argv[]) {
   }
   
   /* Debugging code, use to print out full matrix. Comment when not using */
-  for( i=0; i<size_of_vector[0]; i++){
-    printf("\n");
-    for( j=0; j<size_of_vector[1]; j++){
-    printf("%4d ",Matrix[i][j]);
-    }
-  }
+  //~ for( i=0; i<size_of_vector[0]; i++){
+    //~ printf("\n");
+    //~ for( j=0; j<size_of_vector[1]; j++){
+    //~ printf("%4d ",Matrix[i][j]);
+    //~ }
+  //~ }
   
-  printf("\nLongest length = %d\n",Matrix[size_of_vector[0]-1][size_of_vector[1]-1]);
+  printf("%d\n",Matrix[size_of_vector[0]-1][size_of_vector[1]-1]+1);
   
   /* Loop to discover the longest common subsequence */
   
@@ -126,6 +126,7 @@ int main(int argc, char *argv[]) {
   while( i>=0 && j>=0 ){
     if(seq_1[i]==seq_2[j]){
       LongestSubsequence[CurrentNumber]=seq_1[i];
+      printf("%c\n",seq_1[i]);
       i--;
       j--;
       CurrentNumber--;
@@ -138,11 +139,12 @@ int main(int argc, char *argv[]) {
     }
         
   }
-  
-  printf("\nLongest Subsequence = ");
+    
+  //~ printf("\nLongest Subsequence = ");
   for(i=0;i<Matrix[size_of_vector[0]-1][size_of_vector[1]-1];i++){
   printf("%c",LongestSubsequence[i]);
   }
+  //~ printf("%s\n",LongestSubsequence);
   printf("\n\n");
 
   return 0;
