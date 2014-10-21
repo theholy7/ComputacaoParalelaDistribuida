@@ -21,6 +21,7 @@ Compile with:
 #include <string.h>
 #include <errno.h>
 #include <math.h>
+#include <omp.h>
 
 /* input validation: verify if only 2 parameters are used */
 int input_validation (int arg_count, char *arg_vector[]){
@@ -38,6 +39,7 @@ short cost(int x){
   int i, n_iter = 20;
   double dcost = 0;
   
+  #pragma omp parallel for reduction(+:dcost)
   for(i = 0; i < n_iter; i++)
     dcost += pow(sin((double) x),2) + pow(cos((double) x),2);
   return (short) (dcost / n_iter + 0.1);
@@ -98,7 +100,7 @@ int main(int argc, char *argv[]) {
         Matrix[i][j]=0;
         }
       else if(seq_1[i-1]==seq_2[j-1]){
-        Matrix[i][j]=Matrix[i-1][j-1]+1;
+        Matrix[i][j]=Matrix[i-1][j-1] + cost(i);
         }
       else{
         Matrix[i][j]= fmax(Matrix[i-1][j],Matrix[i][j-1]);

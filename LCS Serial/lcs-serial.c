@@ -94,15 +94,18 @@ int main(int argc, char *argv[]) {
     Matrix[i] = (unsigned short int *) malloc( (size_of_vector[1]+1)*sizeof(unsigned short int));
     
     for(j = 0; j < (size_of_vector[1]+1); j++){
+
       if(i==0||j==0){ 
         Matrix[i][j]=0;
-        }
+      }
+
       else if(seq_1[i-1]==seq_2[j-1]){
         Matrix[i][j]=Matrix[i-1][j-1]+cost(i);
-        }
+      }
+
       else{
         Matrix[i][j]= fmax(Matrix[i-1][j],Matrix[i][j-1]);
-        }
+      }
     }
   }
   
