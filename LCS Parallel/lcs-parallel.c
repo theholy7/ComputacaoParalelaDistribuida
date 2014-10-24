@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
     printf("%s\n", seq_1);
     printf("%s\n", seq_2);
 
-    unsigned short int i = 0, j = 0;
+    short int i = 0, j = 0;
     unsigned short int **Matrix = (unsigned short int **) malloc((size_of_vector[0]) * sizeof(unsigned short int *));
 
 
@@ -114,23 +114,26 @@ int main(int argc, char *argv[])
         }
     }
 
-    for (i = 0; i <= size_of_vector[0]; i++)
+    short int num_diag = 0;
+    for (num_diag = 0; num_diag <= size_of_vector[0] + size_of_vector[1]; num_diag++)
     {
-        short int sub_i = 0;
-        for (sub_i = i; sub_i >= 0; sub_i--)
+        j = num_diag;
+        i = 0;
+        short int diff_2 = 0;
+        if(num_diag>size_of_vector[1])
         {
-            for (j = 0; j <= size_of_vector[1]; j++)
-            {
-                printf("i = %d sub_i = %d j = %d", i, sub_i, j);
-                if (sub_i + j == i)
-                {
-                    printf(" Matrix = %d\n", Matrix[sub_i][j]);
-                    break;
-                }
-                else{
-                    printf("\n");
-                }
-            }
+            j=size_of_vector[1];
+            short int diff = num_diag - size_of_vector[1];
+            i = diff;
+        }
+        if(num_diag>size_of_vector[0])
+        {
+            diff_2 = num_diag - size_of_vector[0];
+        }
+        for(; i <= num_diag - diff_2; i++){
+            
+            printf("%d %d %d\n", num_diag, i, j);
+            j--;
         }
     }
 
