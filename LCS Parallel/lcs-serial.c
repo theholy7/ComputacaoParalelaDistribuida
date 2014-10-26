@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
 
    else{
     /* Read important values from file - 2 ints - 2 strings */
-    fscanf(fp, "%d %d\n", &size_of_vector[0], &size_of_vector[1]);
+    fscanf(fp, "%hu %hu\n", &size_of_vector[0], &size_of_vector[1]);
     
     
     /* Start arrays to store sequences */
@@ -86,33 +86,35 @@ int main(int argc, char *argv[]) {
   //~ printf("%s\n",seq_2);
   
   unsigned short int i=0, j=0;
-  unsigned short int** Matrix = (unsigned short int **) malloc( (size_of_vector[0]+1)*sizeof(unsigned short int));
+  unsigned int** Matrix = (unsigned int **) malloc( (size_of_vector[0]+1)*sizeof(unsigned int));
   
   /* Loop to populate the matrix and give us the longest common subsequence size */
   for(i = 0; i < (size_of_vector[0]+1); i++){
     
-    Matrix[i] = (unsigned short int *) malloc( (size_of_vector[1]+1)*sizeof(unsigned short int));
+    Matrix[i] = (unsigned int *) malloc( (size_of_vector[1]+1)*sizeof(unsigned int));
     
     for(j = 0; j < (size_of_vector[1]+1); j++){
       if(i==0||j==0){ 
         Matrix[i][j]=0;
         }
       else if(seq_1[i-1]==seq_2[j-1]){
-        Matrix[i][j]=Matrix[i-1][j-1]+1;
+        Matrix[i][j]=Matrix[i-1][j-1]+1;//cost(i);
         }
       else{
-        Matrix[i][j]= fmax(Matrix[i-1][j],Matrix[i][j-1]);
+        Matrix[i][j]= 0;//fmax(Matrix[i-1][j],Matrix[i][j-1]);
         }
     }
   }
   
   /* Debugging code, use to print out full matrix. Comment when not using */
-  //~ for( i=0; i<size_of_vector[0]+1; i++){
-    //~ printf("\n");
-    //~ for( j=0; j<size_of_vector[1]+1; j++){
-    //~ printf("%4d ",Matrix[i][j]);
-    //~ }
-  //~ }
+  printf("\n\n");
+  for( i=0; i<size_of_vector[0]+1; i++){
+    printf("\n");
+    for( j=0; j<size_of_vector[1]+1; j++){
+    printf("%4d ",Matrix[i][j]);
+    }
+  }
+  printf("\n\n");
   
   printf("%d\n",Matrix[size_of_vector[0]][size_of_vector[1]]);
   

@@ -1,6 +1,6 @@
 /*************************************************************************
 DESCRIPTION:
-        Serial Implementation of LCS algorithm
+        Parallel Implementation of LCS algorithm
 
 STUDENTS:
         César Alves
@@ -21,7 +21,6 @@ Compile with:
 #include <string.h>
 #include <errno.h>
 #include <math.h>
-#include <omp.h>
 
 /* input validation: verify if only 2 parameters are used */
 int input_validation (int arg_count, char *arg_vector[]){
@@ -70,7 +69,7 @@ int main(int argc, char *argv[]) {
 
    else{
     /* Read important values from file - 2 ints - 2 strings */
-    fscanf(fp, "%d %d\n", &size_of_vector[0], &size_of_vector[1]);
+    fscanf(fp, "%hu %hu\n", &size_of_vector[0], &size_of_vector[1]);
     
     
     /* Start arrays to store sequences */
@@ -86,61 +85,77 @@ int main(int argc, char *argv[]) {
   //~ printf("%s\n",seq_1);
   //~ printf("%s\n",seq_2);
   
-  unsigned short int i=0, j=0;
-  unsigned short int** Matrix = (unsigned short int **) malloc( (size_of_vector[0]+1)*sizeof(unsigned short int));
+  unsigned short int i=0, j=0, jMax;
+  unsigned int** Matrix = (unsigned int **) malloc( (size_of_vector[0]+size_of_vector[1]+1)*sizeof(unsigned int));
   
   /* Loop to populate the matrix and give us the longest common subsequence size */
-  for(i = 0; i < (size_of_vector[0]+1); i++){
+  printf("\n");
+  for(i=0;i<size_of_vector[0]+size_of_vector[1]+1;i++){
     
-    Matrix[i] = (unsigned short int *) malloc( (size_of_vector[1]+1)*sizeof(unsigned short int));
-    #pragma parallel for
-    for(j = 0; j < (size_of_vector[1]+1); j++){
-      if(i==0||j==0){ 
+    jMax=fmin( i+1 , fmin( size_of_vector[0]+size_of_vector[1]+1-i , fmin( size_of_vector[0]+1 , size_of_vector[1]+1 ) ) );
+    
+    Matrix[i] = (unsigned int *) malloc( ( jMax )*sizeof(unsigned int));
+    
+    
+    //~ printf("\n");
+    
+    for(j=0;j<jMax;j++){
+      //~ printf("%d«",jMax);
+      //~ printf("%hu:%hu=%hu  ",i,j,Matrix[i][j]);
+      
+      //~ Matrix[i][j]=i+1;
+      
+      if( (j==0&&i<size_of_vector[0]+1)||(j==jMax-1&&i<size_of_vector[1]+1) ){
         Matrix[i][j]=0;
-        }
-      else if(seq_1[i-1]==seq_2[j-1]){
-        Matrix[i][j]=Matrix[i-1][j-1]+1;
-        }
+      }
+      else if(seq_1[i-(int) fmax(j,j+i-size_of_vector[0])-1]==seq_2[(int) fmax(j,j+i-size_of_vector[0])-1]){
+        Matrix[i][j]=Matrix[i-2][j-1+(int) fmax(0,i-size_of_vector[0]+1)]+1;//cost(i);
+      }
       else{
-        Matrix[i][j]= fmax(Matrix[i-1][j],Matrix[i][j-1]);
-        }
+        Matrix[i][j]=0;// fmax(Matrix[i-1][(int) fmax(j,j+i-size_of_vector[0])],Matrix[i-2][(int) fmax(j,j+i-size_of_vector[0])-1]);
+        
+      }
+      
     }
+    
   }
+  printf("\n\n");
   
   /* Debugging code, use to print out full matrix. Comment when not using */
-  //~ for( i=0; i<size_of_vector[0]+1; i++){
-    //~ printf("\n");
-    //~ for( j=0; j<size_of_vector[1]+1; j++){
-    //~ printf("%4d ",Matrix[i][j]);
-    //~ }
-  //~ }
   
-  printf("%d\n",Matrix[size_of_vector[0]][size_of_vector[1]]);
   
-  /* Loop to discover the longest common subsequence */
-  
-  char *LongestSubsequence = (char *) malloc( ((Matrix[size_of_vector[0]][size_of_vector[1]]))*sizeof(char));
-  
-  i=size_of_vector[0]+1;
-  j=size_of_vector[1]+1;
-  unsigned short int CurrentNumber=Matrix[i-1][j-1];
-  
-  while( i>0 && j>0 ){
-    if(seq_1[i-1]==seq_2[j-1]){
-      LongestSubsequence[CurrentNumber]=seq_1[i-1];
-      i--;
-      j--;
-      CurrentNumber--;
-    }
-    else if(Matrix[i-1][j]>Matrix[i][j-1]){
-      i--;
-    }
-    else{
-      j--;
-    }
-  }
+  for(i=0;i<size_of_vector[0]+size_of_vector[1]+1;i++){
     
-  printf("%s\n",LongestSubsequence);
-
+    jMax=fmin( i+1 , fmin( size_of_vector[0]+size_of_vector[1]+1-i , fmin( size_of_vector[0]+1 , size_of_vector[1]+1 ) ) );
+    
+    
+    printf("\n");
+    
+    for(j=0;j<jMax;j++){
+      printf("%6hu;",Matrix[i][j]);
+      
+    }
+    
+  }
+  
+  printf("\n\n");
+  
+  /* Printf in matrix form */
+  unsigned short int a,b;
+  for(a=0;a<size_of_vector[0]+1;a++){
+        
+    printf("\n");
+    
+    for(b=0;b<size_of_vector[1]+1;b++){
+      i=a+b;
+      j=b-fmax(0,a+b-1-size_of_vector[0]+1);
+      printf("%6hu=%6hu:%6hu=%6hu:%6hu;",Matrix[i][j],i,j,i-2,j-2+(int) fmax(0,i-size_of_vector[0]+1));
+      
+    }
+    
+  }
+  printf("\n\n");
+  
+  
   return 0;
 }
