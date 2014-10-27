@@ -55,9 +55,9 @@ int main(int argc, char *argv[])
 {
 
     FILE *fp;
-    unsigned short int errnum;
+    short int errnum;
 
-    unsigned short int size_of_vector[3];
+    int size_of_vector[3];
     char *seq_1, *seq_2;
 
     input_validation(argc, argv);
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
         /* Read important values from file - 2 ints - 2 strings */
         fscanf(fp, "%d %d\n", &size_of_vector[0], &size_of_vector[1]);
 
-        printf("%d %d", size_of_vector[0], size_of_vector[1]);
+        // printf("%d %d", size_of_vector[0], size_of_vector[1]);
 
 
         /* Start arrays to store sequences */
@@ -94,103 +94,137 @@ int main(int argc, char *argv[])
         fclose (fp);
     }
 
-    printf("%s\n", seq_1);
-    printf("%s\n", seq_2);
+    // printf("%s\n", seq_1);
+    // printf("%s\n", seq_2);
 
-    short int i = 0, j = 0;
-    unsigned short int **Matrix = (unsigned short int **) malloc((size_of_vector[0]) * sizeof(unsigned short int *));
+    int i = 0, j = 0;
+    short int **Matrix = (short int **) malloc((size_of_vector[0] + 1) * sizeof(short int *));
 
 
     /* Loop to populate the matrix and give us the longest common subsequence size */
-    #pragma omp parallel for private(j)
+    printf("Iniciar Matrix.\n");
+    #pragma omp parallel for schedule(static) private(j)
     for (i = 0; i <= (size_of_vector[0]); i++)
     {
 
-        Matrix[i] = (unsigned short int *) malloc( (size_of_vector[1]) * sizeof(unsigned short int));
+        Matrix[i] = (short int *) malloc( (size_of_vector[1] + 1) * sizeof(short int));
 
         for (j = 0; j <= (size_of_vector[1]); j++)
         {
-            Matrix[i][j] = i + j;
+            Matrix[i][j] = 0;
         }
     }
 
-    short int num_diag = 0;
+    printf("Matrix feita.\n");
+
+
+    // Start important variables for anti-diagonal
+    int num_diag = 0; //Anti-diagonal number
+    int diff_2 = 0;   // Difference between last vector position of height and diagonal number
+    int diff = 0;
+    //Iterate through all anti-diagonals of a matrix
+    printf("Calc Matrix.\n");
     for (num_diag = 0; num_diag <= size_of_vector[0] + size_of_vector[1]; num_diag++)
     {
-        j = num_diag;
-        i = 0;
-        short int diff_2 = 0;
-        if(num_diag>size_of_vector[1])
+        j = num_diag; //Column = anti-diag number
+        i = 0;        //Start in row zero
+
+        // if anti-diag number bigger than num of columns of matrix
+        if (num_diag > size_of_vector[1])
         {
-            j=size_of_vector[1];
-            short int diff = num_diag - size_of_vector[1];
-            i = diff;
+            j = size_of_vector[1]; //Use last column as start point
+            diff = num_diag - size_of_vector[1];  //Difference between anti-diag number and matrix width
+            i = diff;  //Start in row equal to difference
         }
-        if(num_diag>size_of_vector[0])
+
+        // if anti-diag number bigger than number of rows
+        if (num_diag > size_of_vector[0])
         {
-            diff_2 = num_diag - size_of_vector[0];
+            diff_2 = num_diag - size_of_vector[0]; //Difference between anti-diag number and matrix height
         }
-        for(; i <= num_diag - diff_2; i++){
-            
-            printf("%d %d %d\n", num_diag, i, j);
-            j--;
+
+        // printf("%d - diagonal antes do parallel for i= %d diff_2= %d j=%d\n", num_diag, i, diff_2, j);
+        int a = i; // create variable with start point (i know it is redundant)
+        int interval = num_diag - diff_2; //create variable with for limit (another redundancy)
+
+        #pragma omp parallel for firstprivate(j)
+        for (i = a; i <= interval; i++)
+        {
+            //printf("ndiag=%d    i=%d\n", i);
+            j = num_diag - i;
+
+
+            // printf("Teste 1\n");
+            if (i >= 1 && j >= 1)
+            {
+                if (seq_1[i - 1] == seq_2[j - 1])
+                {
+                    Matrix[i][j] = Matrix[i - 1][j - 1] + cost(i);
+                }
+                else
+                {
+                    Matrix[i][j] = fmax(Matrix[i - 1][j], Matrix[i][j - 1]);
+                }
+            }
         }
     }
 
+    printf("\n FIM \n");
     // for (i = 1; i <= (size_of_vector[0]); i++)
     // {
     //     for (j = 1; j <= (size_of_vector[1]); j++)
     //     {
-    //         if (seq_1[i - 1] == seq_2[j - 1])
-    //         {
-    //             Matrix[i][j] = Matrix[i - 1][j - 1] + cost(i);
-    //         }
-    //         else
-    //         {
-    //             Matrix[i][j] = fmax(Matrix[i - 1][j], Matrix[i][j - 1]);
-    //         }
+    // if (seq_1[i - 1] == seq_2[j - 1])
+    // {
+    //     Matrix[i][j] = Matrix[i - 1][j - 1] + cost(i);
+    // }
+    // else
+    // {
+    //     Matrix[i][j] = fmax(Matrix[i - 1][j], Matrix[i][j - 1]);
+    // }
     //     }
     // }
     /* Debugging code, use to print out full matrix. Comment when not using */
-    for ( i = 0; i < size_of_vector[0] + 1; i++)
-    {
-        printf("\n");
-        for ( j = 0; j < size_of_vector[1] + 1; j++)
-        {
-            printf("%4d ", Matrix[i][j]);
-        }
-    }
+    // for ( i = 0; i <= size_of_vector[0]; i++)
+    // {
+    //     printf("\n");
+    //     for ( j = 0; j <= size_of_vector[1]; j++)
+    //     {
+    //         printf("%4d ", Matrix[i][j]);
+    //     }
+    // }
+    // printf("\n");
 
-    // printf("%d\n", Matrix[size_of_vector[0]][size_of_vector[1]]);
+    printf("%d\n", Matrix[size_of_vector[0]][size_of_vector[1]]);
 
     // /* Loop to discover the longest common subsequence */
 
-    // char *LongestSubsequence = (char *) malloc( ((Matrix[size_of_vector[0]][size_of_vector[1]])) * sizeof(char));
+    char *LongestSubsequence = (char *) malloc( ((Matrix[size_of_vector[0]][size_of_vector[1]])) * sizeof(char));
 
-    // i = size_of_vector[0] + 1;
-    // j = size_of_vector[1] + 1;
-    // unsigned short int CurrentNumber = Matrix[i - 1][j - 1];
+    i = size_of_vector[0] + 1;
+    j = size_of_vector[1] + 1;
+    short int CurrentNumber = Matrix[i - 1][j - 1];
 
-    // while ( i > 0 && j > 0 )
-    // {
-    //     if (seq_1[i - 1] == seq_2[j - 1])
-    //     {
-    //         LongestSubsequence[CurrentNumber] = seq_1[i - 1];
-    //         i--;
-    //         j--;
-    //         CurrentNumber--;
-    //     }
-    //     else if (Matrix[i - 1][j] > Matrix[i][j - 1])
-    //     {
-    //         i--;
-    //     }
-    //     else
-    //     {
-    //         j--;
-    //     }
-    // }
+    while ( i > 0 && j > 0 )
+    {
+        if (seq_1[i - 1] == seq_2[j - 1])
+        {
+            LongestSubsequence[CurrentNumber] = seq_1[i - 1];
+            i--;
+            j--;
+            CurrentNumber--;
+        }
+        else if (Matrix[i - 1][j] > Matrix[i][j - 1])
+        {
+            i--;
+        }
+        else
+        {
+            j--;
+        }
+    }
 
-    // printf("%s\n", LongestSubsequence);
+    printf("%s\n", LongestSubsequence);
 
     return 0;
 }
