@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
   //~ printf("%s\n",seq_2);
   
   unsigned short int i=0, j=0, jMax;
-  unsigned int** Matrix = (unsigned int **) malloc( (size_of_vector[0]+size_of_vector[1]+1)*sizeof(unsigned int));
+  unsigned int** Matrix = (unsigned int **) malloc( (size_of_vector[0]+size_of_vector[1]+1)*sizeof(unsigned int *));
   
   /* Loop to populate the matrix and give us the longest common subsequence size */
   printf("\n");
@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
         Matrix[i][j]=0;
       }
       else if(seq_1[i-(int) fmax(j,j+i-size_of_vector[0])-1]==seq_2[(int) fmax(j,j+i-size_of_vector[0])-1]){
-        Matrix[i][j]=Matrix[i-2][j-1+(int) fmax(0,i-size_of_vector[0]+1)]+1;//cost(i);
+        Matrix[i][j]=Matrix[i-2][j-1+((i>size_of_vector[0]-1)?1:0)]+1;//cost(i);
       }
       else{
         Matrix[i][j]=0;// fmax(Matrix[i-1][(int) fmax(j,j+i-size_of_vector[0])],Matrix[i-2][(int) fmax(j,j+i-size_of_vector[0])-1]);
