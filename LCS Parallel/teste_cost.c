@@ -11,7 +11,7 @@ Course:
         Computação Paralela e Distribuida - 2014 @ IST
 
 Compile with:
-        
+
         gcc -lm -o lcs-serial lcs-serial.c
 
 **************************************************************************/
@@ -24,27 +24,54 @@ Compile with:
 #include <omp.h>
 
 
-short cost(int x){
-  int iter, n_iter = 20;
-  double dcost = 0;
-  
-  for(iter = 0; iter < n_iter; iter++)
-    dcost += pow(sin((double) x),2) + pow(cos((double) x),2);
-  
-  return (short) (dcost / n_iter + 0.1);
-}
+int main(int argc, char *argv[])
+{
+    short int i = 0, j = 0;
+    int tid;
+    int size_of_vector[3];
 
-int main(int argc, char *argv[]) {
-  unsigned short int i=0, j=0;
-  
-  /* Loop to populate the matrix and give us the longest common subsequence size */
-  char teste[] = "012345";
+    size_of_vector[0] = 10;
+    size_of_vector[1] = 15;
 
-  printf("%s - len %d\n", teste, strlen(teste));
+    short int **Matrix = (short int **) malloc((size_of_vector[0]+1) * sizeof(short int *));
 
-  for(i = 0; i <= strlen(teste)+2; i++)
-    printf("%c\n", teste[i]);
- 
+    #pragma omp parallel for private(j)
+    for (i = 0; i <= (size_of_vector[0]); i++)
+    {
 
-  return 0;
+        Matrix[i] = (short int *) malloc( (size_of_vector[1]+1) * sizeof(short int));
+
+        for (j = 0; j <= (size_of_vector[1]); j++)
+        {
+            Matrix[i][j] = i + j;
+        }
+    }
+
+    printf("Matrix feita.\n");
+
+    // for ( i = 0; i <= size_of_vector[0]; i++)
+    // {
+    //     printf("\n");
+    //     for ( j = 0; j <= size_of_vector[1]; j++)
+    //     {
+    //         printf("%4d ", Matrix[i][j]);
+    //     }
+    // }
+    printf("\n");
+    printf("Matrix impressa.\n");
+
+    /* Loop to populate the matrix and give us the longest common subsequence size */
+    int a = 0, b = 0;
+
+    for (a= 0; a <= 5; a++)
+    {
+        #pragma omp parallel for private(tid)
+        for (b = 0; b <= a; b++)
+        {
+            tid = omp_get_thread_num();
+            printf("j=%2d    i=%2d    thread=%d \n", a, b, tid);
+        }
+    }
+
+    return 0;
 }
