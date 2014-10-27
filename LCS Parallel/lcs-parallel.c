@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 
 
     /* Loop to populate the matrix and give us the longest common subsequence size */
-    printf("Iniciar Matrix.\n");
+    //printf("Iniciar Matrix.\n");
     #pragma omp parallel for schedule(static) private(j)
     for (i = 0; i <= (size_of_vector[0]); i++)
     {
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    printf("Matrix feita.\n");
+    //printf("Matrix feita.\n");
 
 
     // Start important variables for anti-diagonal
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
     int diff_2 = 0;   // Difference between last vector position of height and diagonal number
     int diff = 0;
     //Iterate through all anti-diagonals of a matrix
-    printf("Calc Matrix.\n");
+    //printf("Calc Matrix.\n");
     for (num_diag = 0; num_diag <= size_of_vector[0] + size_of_vector[1]; num_diag++)
     {
         j = num_diag; //Column = anti-diag number
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    printf("\n FIM \n");
+    //printf("\n FIM \n");
     // for (i = 1; i <= (size_of_vector[0]); i++)
     // {
     //     for (j = 1; j <= (size_of_vector[1]); j++)
