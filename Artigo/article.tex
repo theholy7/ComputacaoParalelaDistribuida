@@ -83,7 +83,7 @@ The implemented serial version was straightforward to implemente. The matrix was
 \end{algorithmic}
 \end{algorithm}
 
-Although this is the easiest solution to implement, it is not the best solution when it comes to transforming the code into an effective paralellized version.
+Albeit being the easiest solution to implement, this is not the best method when it comes to transforming the code into an effective paralleled version.
 %\begin{figure}[h!]
 %  \centering
 %      \includegraphics[width=0.5\textwidth]{esquema.png}
@@ -92,10 +92,55 @@ Although this is the easiest solution to implement, it is not the best solution 
 %\end{figure}
 
 \subsection{Parallel Implementation}
+The thought process for any parallelization revolves around computing as many simultaneous values as possible. The rule for being able to make these computations is that they don't depend on each other.
 
+In the LCS algorithm, the dependencies for each cell are well defined in the algorithm.
+
+\begin{figure}[h!]
+  \centering
+      \includegraphics[width=0.35\textwidth]{img/matrix_3.png}
+  \caption{Data dependencies of each $C(i,j)$.~\cite{esquema}.}
+   \label{fig:3}
+\end{figure}
+
+It is trivial to see that each cell $C(i,j)$ depends on either $C(i, j-1)$ and $C(i-1,j)$ or $C(i-1,j-1)$. Furthermore, it is easy to say that each element in an anti-diagonal can be computed in parallel, since there are no dependencies.
+
+As such the implemented algorithm has the form:
+\vspace{2mm}
+
+\begin{algorithm}
+\caption{Parallel LCS implementation}
+\label{lcs-parallel}
+\begin{algorithmic}
+\FOR{$anti-diagonal=0$ to $N+M$}
+	\FOR{$i=0$ to $N$}
+		\STATE{j = anti-diagonal - i}
+		\IF{i>0 || j>0}
+		\STATE Compute $C(i,j)$
+		\ENDIF
+	\ENDFOR
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+This implementation raises concerns over the cache usage, which is not being used as efficiently as it could be.
 
 \section{Results}
 METER AQUI AS TABELAS COM OS VALORES
+
+\begin{center}
+\begin{tabular}{c|c|c}
+  \hline                       
+  Data & Serial & Parallel \\
+  \hline
+  ex10.15.in & 5 & 6 \\
+  ex150.200.in & 5 & 6 \\
+  ex3k.8k.in & 5 & 6 \\
+  ex18k.17k.in & 5 & 6 \\
+  ex48k.30k.in & 8 & 9 \\
+  \hline 
+\end{tabular}
+\end{center}
 
 \section{Discussion}
 DISCUTIR AQUI AS TABELAS
@@ -104,9 +149,8 @@ DISCUTIR AQUI AS TABELAS
 CONCLUIR CENAS
 
 \vspace{-2mm}
-\section{Agradecimentos}
-We would like thank Professor José Monteiro te
-
+\section{Aknowledgements}
+We would like thank Professor José Monteiro and Professor José Costa, from IST-UL, for their time and help, for teaching us and shedding light over our doubts.
 
 \begin{thebibliography}{99}
 
