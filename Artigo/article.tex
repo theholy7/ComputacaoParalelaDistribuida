@@ -7,6 +7,9 @@
 \usepackage{amsmath,amsfonts,amssymb}
 \usepackage[latin9]{inputenc}
 \usepackage[portuguese]{babel} 
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
 
 \hyphenation{}
 \begin{document}
@@ -22,15 +25,65 @@
 \affiliation{Departamento de Física, Instituto Superior Técnico, Universidade de Lisboa, Lisboa, Portugal}
 
 \begin{abstract}
-The Lowest Common Subsequence (LCS) was implemented in a serial and parallel fashion. Our serial implementation creates a matrix that is run line by line. In the parallel version each anti-diagonal was calculated independently with each value being calculated in parallel.
+The Longest Common Subsequence (LCS) was implemented in a serial and parallel fashion. Our serial implementation creates a matrix that is run line by line. In the parallel version each anti-diagonal was calculated in sequence with each value being calculated in parallel.
 \end{abstract}
 
 \maketitle
 
 \section{Introduction}
+With this work we wish to study the difference in execution time between the serial and parallel implementation of the Longest Common Subsequence (LCS) algorithm. This is a relevant algorithm in the bioinformatics field where a comparison between two DNA sequences is needed.
 
+Problems appear when sequences become very large and the serial implementation of the code starts to have a very long execution time.
+
+Processors have evolved more in the direction of having multiple cores over faster speeds and, as such, the trivial answer to these longer execution times is to have a parallel approach to the problem.
+
+The LCS algorithm takes two sequences, $X$ and $Y$, of different lengths and will use a matrix to compare them. The matrix will be filled with integer values depending on how each element and the previous ones compare to each other.
+
+The basic structure of the algorithm is the following:
+
+\[ c(i, j) = \left\{ 
+  \begin{array}{l l}
+    0 & \text{if $i, j = 0$}\\
+    c(i-1, j-1) + 1 &  \text{if $i, j > 0$ $x_i = y_j$}\\
+    max( c(i-1, j); c(i, j-1) ) &  \text{if $i, j > 0$ $x_i \neq y_j$}
+  \end{array} \right.\]
+and this creates a matrix which will give the longest subsequence.
+
+\begin{figure}[h!]
+  \centering
+      \includegraphics[width=0.35\textwidth]{img/matrix_1.png}
+  \caption{Filled matrix after LCS algorithm.~\cite{esquema}.}
+   \label{fig:1}
+\end{figure}
+
+With this matrix it is only needed that we start from the highest number and walk to the left. We go to the upper diagonal if there is a mismatch between the numbers and left only if they match.
+
+\begin{figure}[h!]
+  \centering
+      \includegraphics[width=0.35\textwidth]{img/matrix_2.png}
+  \caption{Representation of the LCS walk.~\cite{esquema}.}
+   \label{fig:2}
+\end{figure}
+
+We can achieve the LCS by selecting the letters corresponding to the indexes that make our walk move in the upper diagonal direction.
 \section{Methods}
 \subsection{Serial Implementation}
+The implemented serial version was straightforward to implemente. The matrix was calculated element by element, line by line, taking advantage of the cache's Locality Principal, both spacial and temporal.
+\vspace{2mm}
+
+\begin{algorithm}
+\caption{Serial LCS implementation}
+\label{lcs-serial}
+\begin{algorithmic}
+\FOR{$i=0$ to $N$}
+	\FOR{$j=0$ to $M$}
+		\STATE Compute $C(i,j)$
+	\ENDFOR
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+Although this is the easiest solution to implement, it is not the best solution when it comes to transforming the code into an effective paralellized version.
 %\begin{figure}[h!]
 %  \centering
 %      \includegraphics[width=0.5\textwidth]{esquema.png}
@@ -42,18 +95,17 @@ The Lowest Common Subsequence (LCS) was implemented in a serial and parallel fas
 
 
 \section{Results}
-
+METER AQUI AS TABELAS COM OS VALORES
 
 \section{Discussion}
-
+DISCUTIR AQUI AS TABELAS
 
 \section{Conclusions}
+CONCLUIR CENAS
 
 \vspace{-2mm}
 \section{Agradecimentos}
-Gostaria de agradecer ao NFIST - Núcleo de Física do IST - pelo apoio na obtenção de material para a execução deste trabalho e de agradecer ao Rúben Marques e ao Lino Marques pelo conhecimento e talento na fabricação de peças necessárias à coluna. Sem este esforço de equipa, este trabalho não poderia ser realizado tão metodicamente como desejado.
-
-Gostaria também de agradecer ao Professor Filipe Joaquim pelos conselhos dados nas aulas sobre a escrita de um artigo e apresentação de um trabalho científico. Graças ao tempo que disponibilizou para nos ensinar nas aulas foi mais fácil organizar as ideias e planear o trabalho, tornando-me mais eficiente a escrevê-lo.
+We would like thank Professor José Monteiro te
 
 
 \begin{thebibliography}{99}
