@@ -98,25 +98,25 @@ int main(int argc, char *argv[]) {
         Matrix[i][j]=0;
         }
       else if(seq_1[i-1]==seq_2[j-1]){
-        Matrix[i][j]=Matrix[i-1][j-1]+1;//cost(i);
+        Matrix[i][j]=Matrix[i-1][j-1]+cost(i);
         }
       else{
-        Matrix[i][j]= 0;//fmax(Matrix[i-1][j],Matrix[i][j-1]);
+        Matrix[i][j]=(int) fmax(Matrix[i-1][j],Matrix[i][j-1]);
         }
     }
   }
   
   /* Debugging code, use to print out full matrix. Comment when not using */
-  printf("\n\n");
-  for( i=0; i<size_of_vector[0]+1; i++){
-    printf("\n");
-    for( j=0; j<size_of_vector[1]+1; j++){
-    printf("%4d ",Matrix[i][j]);
-    }
-  }
-  printf("\n\n");
-  
-  printf("%d\n",Matrix[size_of_vector[0]][size_of_vector[1]]);
+  //~ printf("\n\n");
+  //~ for( i=0; i<size_of_vector[0]+1; i++){
+    //~ printf("\n");
+    //~ for( j=0; j<size_of_vector[1]+1; j++){
+    //~ printf("%4d ",Matrix[i][j]);
+    //~ }
+  //~ }
+  //~ printf("\n\n");
+  //~ 
+  //~ printf("%d\n",Matrix[size_of_vector[0]][size_of_vector[1]]);
   
   /* Loop to discover the longest common subsequence */
   

@@ -21,6 +21,7 @@ Compile with:
 #include <string.h>
 #include <errno.h>
 #include <math.h>
+#include <omp.h>
 
 /* input validation: verify if only 2 parameters are used */
 int input_validation (int arg_count, char *arg_vector[]){
@@ -98,21 +99,24 @@ int main(int argc, char *argv[]) {
     
     
     //~ printf("\n");
-    
+    #pragma omp parallel for
     for(j=0;j<jMax;j++){
       //~ printf("%d«",jMax);
       //~ printf("%hu:%hu=%hu  ",i,j,Matrix[i][j]);
       
-      //~ Matrix[i][j]=i+1;
+      Matrix[i][j]=i+1;
       
       if( (j==0&&i<size_of_vector[0]+1)||(j==jMax-1&&i<size_of_vector[1]+1) ){
         Matrix[i][j]=0;
       }
       else if(seq_1[i-(int) fmax(j,j+i-size_of_vector[0])-1]==seq_2[(int) fmax(j,j+i-size_of_vector[0])-1]){
-        Matrix[i][j]=Matrix[i-2][j-1+((i>size_of_vector[0]-1)?1:0)]+1;//cost(i);
+        int alpha=(i>size_of_vector[0]+1)?(j+1):( (i==size_of_vector[0]+1)?(j):(j-1) );
+        Matrix[i][j]=Matrix[i-2][alpha]+cost(i);
       }
       else{
-        Matrix[i][j]=0;// fmax(Matrix[i-1][(int) fmax(j,j+i-size_of_vector[0])],Matrix[i-2][(int) fmax(j,j+i-size_of_vector[0])-1]);
+        int alpha_top=(i>size_of_vector[0])?(j+1):(j);
+        int alpha_left=(i>size_of_vector[0])?(j):(j-1);
+        Matrix[i][j]=(int) fmax(Matrix[i-1][alpha_top],Matrix[i-1][alpha_left]);
         
       }
       
@@ -124,37 +128,40 @@ int main(int argc, char *argv[]) {
   /* Debugging code, use to print out full matrix. Comment when not using */
   
   
-  for(i=0;i<size_of_vector[0]+size_of_vector[1]+1;i++){
-    
-    jMax=fmin( i+1 , fmin( size_of_vector[0]+size_of_vector[1]+1-i , fmin( size_of_vector[0]+1 , size_of_vector[1]+1 ) ) );
-    
-    
-    printf("\n");
-    
-    for(j=0;j<jMax;j++){
-      printf("%6hu;",Matrix[i][j]);
-      
-    }
-    
-  }
+  //~ for(i=0;i<size_of_vector[0]+size_of_vector[1]+1;i++){
+    //~ 
+    //~ jMax=fmin( i+1 , fmin( size_of_vector[0]+size_of_vector[1]+1-i , fmin( size_of_vector[0]+1 , size_of_vector[1]+1 ) ) );
+    //~ 
+    //~ 
+    //~ printf("\n");
+    //~ 
+    //~ for(j=0;j<jMax;j++){
+      //~ printf("%6hu;",Matrix[i][j]);
+      //~ 
+    //~ }
+    //~ 
+  //~ }
   
   printf("\n\n");
   
   /* Printf in matrix form */
-  unsigned short int a,b;
-  for(a=0;a<size_of_vector[0]+1;a++){
-        
-    printf("\n");
-    
-    for(b=0;b<size_of_vector[1]+1;b++){
-      i=a+b;
-      j=b-fmax(0,a+b-1-size_of_vector[0]+1);
-      printf("%6hu=%6hu:%6hu=%6hu:%6hu;",Matrix[i][j],i,j,i-2,j-2+(int) fmax(0,i-size_of_vector[0]+1));
-      
-    }
-    
-  }
-  printf("\n\n");
+  //~ unsigned short int a,b;
+  //~ for(a=0;a<size_of_vector[0]+1;a++){
+        //~ 
+    //~ printf("\n");
+    //~ 
+    //~ for(b=0;b<size_of_vector[1]+1;b++){
+      //~ i=a+b;
+      //~ j=b-fmax(0,a+b-1-size_of_vector[0]+1);
+      //~ int alpha_diag=(i>size_of_vector[0]+1)?(j+1):( (i==size_of_vector[0]+1)?(j):(j-1) );
+      //~ int alpha_left=(i>size_of_vector[0])?(j):(j-1);
+      //~ int alpha_top=(i>size_of_vector[0])?(j+1):(j);
+      //~ printf("%2hu;",Matrix[i][j]);
+      //~ 
+    //~ }
+    //~ 
+  //~ }
+  //~ printf("\n\n");
   
   
   return 0;
