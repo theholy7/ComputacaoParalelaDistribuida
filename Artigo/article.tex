@@ -8,7 +8,8 @@
 \usepackage[latin9]{inputenc}
 \usepackage[portuguese]{babel} 
 \usepackage{algorithm}
-\usepackage{algorithmic}
+\usepackage{algpseudocode}
+
 
 
 \hyphenation{}
@@ -75,11 +76,11 @@ The implemented serial version was straightforward to implemente. The matrix was
 \caption{Serial LCS implementation}
 \label{lcs-serial}
 \begin{algorithmic}
-\FOR{$i=0$ to $N$}
-	\FOR{$j=0$ to $M$}
-		\STATE Compute $C(i,j)$
-	\ENDFOR
-\ENDFOR
+\For{$i=0$ to $N$}
+	\For{$j=0$ to $M$}
+		\State Compute $C(i,j)$
+	\EndFor
+\EndFor
 \end{algorithmic}
 \end{algorithm}
 
@@ -112,14 +113,14 @@ As such the implemented algorithm has the form:
 \caption{Parallel LCS implementation}
 \label{lcs-parallel}
 \begin{algorithmic}
-\FOR{$anti-diagonal=0$ to $N+M$}
-	\FOR{$i=0$ to $N$}
-		\STATE{j = anti-diagonal - i}
-		\IF{i>0 || j>0}
-		\STATE Compute $C(i,j)$
-		\ENDIF
-	\ENDFOR
-\ENDFOR
+\For{$anti-diagonal=0$ to $N+M$}
+	\For{$i=0$ to $N$}
+		\State{j = anti-diagonal - i}
+		\If{$i>0$ or $j>0$}
+		\State Compute $C(i,j)$
+		\EndIf
+	\EndFor
+\EndFor
 \end{algorithmic}
 \end{algorithm}
 
