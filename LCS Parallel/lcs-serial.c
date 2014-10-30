@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
     seq_2 = (char *) malloc ((size_of_vector[1]) * sizeof(char));
     
     /* Read arrays */
-    fscanf(fp,"%s\n%s", seq_1, seq_2);
+    fscanf(fp,"%s\n%s", seq_2, seq_1);
     
     fclose (fp);
   }
@@ -116,27 +116,31 @@ int main(int argc, char *argv[]) {
   //~ }
   //~ printf("\n\n");
   //~ 
-  //~ printf("%d\n",Matrix[size_of_vector[0]][size_of_vector[1]]);
+  printf("%d\n",Matrix[size_of_vector[0]][size_of_vector[1]]);
   
   /* Loop to discover the longest common subsequence */
   
   char *LongestSubsequence = (char *) malloc( ((Matrix[size_of_vector[0]][size_of_vector[1]]))*sizeof(char));
   
-  i=size_of_vector[0]+1;
-  j=size_of_vector[1]+1;
-  unsigned short int CurrentNumber=Matrix[i-1][j-1];
+  i=size_of_vector[0];
+  j=size_of_vector[1];
+  unsigned short int CurrentNumber=Matrix[i][j];
   
   while( i>0 && j>0 ){
-    if(seq_1[i-1]==seq_2[j-1]){
-      LongestSubsequence[CurrentNumber]=seq_1[i-1];
+    printf("0=\n");
+    if(seq_1[i-2]==seq_2[j-2]){
+      printf("1=\n");
+      LongestSubsequence[CurrentNumber]=seq_1[i-2];
       i--;
       j--;
       CurrentNumber--;
     }
     else if(Matrix[i-1][j]>Matrix[i][j-1]){
+      printf("2=\n");
       i--;
     }
     else{
+      printf("3=\n");
       j--;
     }
   }
